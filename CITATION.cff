@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the repository and the Zenodo dataset."
+title: "Core daily BWSD calculation for the Fengshuwan catchment"
+authors:
+  - family-names: Wang
+    given-names: Tianlong
+  - family-names: Sun
+    given-names: Hongyue
+date-released: "2026-05-07"
+abstract: "Lightweight reproducibility repository for the core daily Basin Water Storage Degree calculation in the Fengshuwan catchment."
+repository-code: "https://github.com/zjusuge/bwsd-fengshuwan-case"
+url: "https://github.com/zjusuge/bwsd-fengshuwan-case"
+license: "MIT"
+keywords:
+  - Basin Water Storage Degree
+  - BWSD
+  - Fengshuwan catchment
+  - hydrological-state warning
+  - small mountain catchment
+  - debris flow
+  - water balance
+references:
+  - type: data
+    authors:
+      - family-names: Wang
+        given-names: Tianlong
+    title: "Processed Daily Hydrological Dataset for the Fengshuwan Catchment, Zhejiang, China, 2023–2026"
+    year: 2026
+    version: "v1.0.0"
+    doi: "10.5281/zenodo.20068173"
+    url: "https://doi.org/10.5281/zenodo.20068173"
