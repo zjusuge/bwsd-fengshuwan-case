@@ -1,0 +1,51 @@
+{
+  "software_version": "1.1.0",
+  "python": "3.12.14",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "packages": {
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "openpyxl": "3.1.5",
+    "matplotlib": "3.11.2",
+    "scikit-learn": "1.9.1",
+    "xgboost": "3.4.1",
+    "shap": "0.53.0"
+  },
+  "input_sha256": "3706341cc062c43a3d0d5e6fc72efeb72f15e500aea25edc3218a9ba84ad7154",
+  "parameters": {
+    "catchment_name": "Fengshuwan catchment",
+    "catchment_area_km2": 0.8461,
+    "dataset_title": "Processed Daily Hydrological Dataset for the Fengshuwan Catchment, Zhejiang, China, 2023\u20132026",
+    "dataset_version": "v1.0.0",
+    "dataset_doi": "10.5281/zenodo.20068173",
+    "dataset_url": "https://doi.org/10.5281/zenodo.20068173",
+    "dataset_citation": "Wang, T. (2026). Processed Daily Hydrological Dataset for the Fengshuwan Catchment, Zhejiang, China, 2023\u20132026 (v1.0.0) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.20068173",
+    "t0": "2023-10-12",
+    "hydrological_initialization_days": 90,
+    "formal_initialization_days": 365,
+    "p_stat": 0.98,
+    "m0": 1.2,
+    "m_nc": 1.2,
+    "s_min_mm": 20.0,
+    "theta_1": 0.7,
+    "theta_2": 0.9,
+    "min_prior_for_stat": 30,
+    "min_prior_for_nc": 1,
+    "missing_flux_policy": "carry",
+    "assume_confirmed_noncritical": true,
+    "episode_start": null,
+    "episode_end": null
+  },
+  "accepted_article": "IJDRR-D-26-01829R1",
+  "accepted_date": "2026-10-09",
+  "formal_results_only_are_forward_looking": true,
+  "data_quality_flags_sha256": "33d69df0963b96c401f8baa61b0a6b0809a47bc9a29a549d23f9a0065d283a6a",
+  "analyses": {
+    "analysis": true,
+    "attribution": true,
+    "plots": true,
+    "mc_realizations": 1000,
+    "seed": 20260505,
+    "mc_policy": "paper-prior"
+  }
+}

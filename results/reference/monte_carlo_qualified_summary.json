@@ -1,0 +1,12 @@
+{
+  "realizations": 1000,
+  "seed": 20260505,
+  "threshold_policy": "confirmed-high",
+  "realizations_with_critical_reference_exceedance": 0,
+  "empirical_exceedance_frequency": 0.0,
+  "smallest_nonzero_resolvable_frequency": 0.001,
+  "maximum_bwsd_median": 0.9310681577122367,
+  "maximum_bwsd_p05": 0.9044061051140538,
+  "maximum_bwsd_p95": 0.9490915323678434,
+  "interpretation": "Input-propagation ensemble, not a calibrated debris-flow probability or confidence bound."
+}

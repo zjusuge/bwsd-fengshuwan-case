@@ -1,458 +1,84 @@
-# Basin Water Storage Degree BWSD: Fengshuwan Daily Case
+# BWSD · Fengshuwan
 
-This repository provides a lightweight and transparent implementation of the **core daily Basin Water Storage Degree BWSD calculation** for the Fengshuwan small debris-flow catchment in Tianmushan, Zhejiang Province, China.
+**Sequential apparent-storage assessment for risk-informed debris-flow warning support.**
 
-The processed daily hydrological dataset used by this repository is archived on Zenodo as an independent dataset:
+[![Tests](https://github.com/zjusuge/bwsd-fengshuwan-case/actions/workflows/tests.yml/badge.svg)](https://github.com/zjusuge/bwsd-fengshuwan-case/actions/workflows/tests.yml)
+[![Data DOI](https://img.shields.io/badge/Data-10.5281%2Fzenodo.20068173-blue)](https://doi.org/10.5281/zenodo.20068173)
 
-> Wang, T. (2026). *Processed Daily Hydrological Dataset for the Fengshuwan Catchment, Zhejiang, China, 2023–2026* (v1.0.0) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.20068173
+BWSD reconstructs apparent storage from rainfall, channel drainage and an evaporation-based atmospheric water-loss proxy, then normalizes it against a reference assembled from prior evidence. This repository provides the daily calculation, comparative indicators, short-lead persistence, episode embargo, parameter sensitivity, input-uncertainty propagation and diagnostic XGBoost/SHAP attribution.
 
-The repository accompanies the manuscript:
+**Article:** Tianlong Wang, Jian Chu, Hao Yang and Hongyue Sun. *Basin Water Storage Degree for Risk-Informed Debris-Flow Warning Support: A Forward-Looking Proof of Concept in a Small Mountain Catchment*. **International Journal of Disaster Risk Reduction**, accepted 9 October 2026, IJDRR-D-26-01829R1. Article DOI and pagination will be added when issued.
 
-> **Basin Water Storage Degree: A Forward-Looking Water-Balance Indicator for Hydrological-State Warning in Small Debris-Flow Catchments**
+## Run the case
 
-The associated manuscript is currently under peer review. A formal journal citation will be updated after publication.
-
----
-
-## 1. Repository scope
-
-This public repository is designed to reproduce the **core daily BWSD calculation** reported for the Fengshuwan catchment using the processed daily hydrological dataset archived on Zenodo.
-
-The released code reproduces:
-
-- daily apparent net water input;
-- apparent basin storage increment;
-- forward-looking critical-reference storage threshold;
-- BWSD values;
-- BWSD-based hydrological-state levels;
-- selected exceedance statistics;
-- parameter summary;
-- metadata;
-- output-column dictionary.
-
-The repository is intentionally lightweight. It focuses on the daily no-event Fengshuwan implementation of the BWSD framework.
-
-The following materials are **not fully included** in this public repository:
-
-- raw high-frequency sensor records;
-- raw video-monitoring files;
-- UAV imagery and field-inspection archives;
-- intermediate water-level and discharge-processing files;
-- publication-quality figure-generation scripts;
-- supplementary indicator-comparison scripts;
-- XGBoost and SHAP diagnostic scripts;
-- Monte Carlo uncertainty-propagation scripts;
-- full sensitivity-analysis scripts.
-
-These materials are retained by the authors and may be provided upon reasonable request where appropriate.
-
-The independent processed daily hydrological dataset is archived on Zenodo and can be reused for broader hydrological and geomorphological research with appropriate citation.
-
----
-
-## 2. Authors and contact
-
-For questions about the dataset, code, or manuscript, please contact the first author:
-
-**Tianlong Wang**
-
-- Ocean College, Zhejiang University, Zhoushan 316000, China
-- School of Civil and Environmental Engineering, Nanyang Technological University, Singapore 637616, Singapore
-- Contact: <tianlong_wang@zju.edu.cn>
-
----
-
-## 3. Repository structure
-
-```text
-bwsd-fengshuwan-case/
-├── README.md
-├── main.py
-├── requirements.txt
-├── LICENSE
-├── CITATION.cff
-├── .gitignore
-├── data/
-│   ├── README.md
-│   └── fengshuwan_processed_daily_hydrology.xlsx
-└── results/
-    └── fengshuwan_bwsd_results.xlsx
-```
-
----
-
-## 4. Input data
-
-The processed daily hydrological dataset used by this repository is archived on Zenodo:
-
-```text
-Wang, T. (2026). Processed Daily Hydrological Dataset for the Fengshuwan Catchment, Zhejiang, China, 2023–2026 (v1.0.0) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.20068173
-```
-
-The input workbook expected by the script is:
-
-```text
-data/fengshuwan_processed_daily_hydrology.xlsx
-```
-
-The main input sheet is:
-
-```text
-Daily_Data
-```
-
-The processed daily dataset contains the following variables:
-
-| Column name | Description | Unit |
-|---|---|---|
-| `Date` | Daily date | yyyy-mm-dd |
-| `Precipitation_mm` | Daily precipitation depth | mm day^-1 |
-| `Evapotranspiration_mm` | Daily field-measured evapotranspiration-loss depth | mm day^-1 |
-| `Water_level_m` | Processed daily outlet water level | m |
-| `Runoff_mm` | Daily outlet runoff depth converted to catchment-area-averaged water depth | mm day^-1 |
-
-The released dataset covers the Fengshuwan monitoring period from **12 October 2023 to 6 April 2026** and contains **908 daily observations**.
-
-The Zenodo record should be treated as the authoritative archived version of the processed daily hydrological dataset. The copy included in this GitHub repository, if present, is provided for computational convenience and should remain identical to the Zenodo version.
-
----
-
-## 5. Output data
-
-Running the public script creates the output workbook:
-
-```text
-results/fengshuwan_bwsd_results.xlsx
-```
-
-The output workbook contains the following sheets:
-
-| Sheet name | Description |
-|---|---|
-| `Daily_BWSD` | Daily water-balance variables, apparent storage, forward-looking threshold components, BWSD values, and BWSD-based hydrological-state levels |
-| `Exceedance` | Selected exceedance statistics for the formal evaluation period |
-| `Parameters` | Fixed parameter values used in the daily Fengshuwan implementation |
-| `Metadata` | Basic dataset, implementation, and reproducibility metadata |
-| `Column_Dictionary` | Explanation of output columns |
-
----
-
-## 6. Method summary
-
-### 6.1 Apparent net water input
-
-For the daily implementation, the apparent net water input is calculated as:
-
-$$
-I^{*}_{t} = P_{t} - Q_{t} - E_{t}
-$$
-
-where:
-
-- \(P_{t}\) is daily precipitation depth;
-- \(Q_{t}\) is daily outlet runoff depth;
-- \(E_{t}\) is daily field-measured evapotranspiration-loss depth;
-- \(I^{*}_{t}\) is the apparent net water input.
-
-All variables are expressed as catchment-area-averaged water depths in millimeters.
-
----
-
-### 6.2 Apparent basin storage increment
-
-A low-storage reference state is initialized as:
-
-$$
-\Delta S_{t_{0}} = 0
-$$
-
-The apparent basin storage increment is then recursively updated as:
-
-$$
-\Delta S_{t} =
-\max
-\left(
-0,
-\Delta S_{t-1} + I^{*}_{t}
-\right)
-$$
-
-where \(\Delta S_{t}\) is the apparent basin storage increment relative to the selected low-storage reference state.
-
-The non-negative constraint prevents long-term accumulation of nonphysical negative storage values caused by measurement uncertainty, imperfect water-balance closure, or unrepresented subsurface drainage.
-
----
-
-### 6.3 Forward-looking critical-reference threshold
-
-For each day \(t\), the critical-reference storage threshold is calculated using only information available before that day.
-
-The statistical prior threshold is calculated from prior valid samples:
-
-$$
-S^{-}_{stat,t}
-=
-Q_{p}
-\left(
-\mathcal{B}_{t-1}
-\right)
-$$
-
-where:
-
-- \(S^{-}_{stat,t}\) is the forward-looking statistical prior threshold;
-- \(Q_{p}\) is a high-quantile operator;
-- \(\mathcal{B}_{t-1}\) is the set of valid apparent storage values available before day \(t\).
-
-The no-event Fengshuwan implementation uses the following daily threshold form:
-
-$$
-S^{-}_{crit,t}
-=
-\max
-\left(
-S_{min},
-S_{init},
-S^{-}_{stat,t},
-S^{-}_{nc,t}
-\right)
-$$
-
-where:
-
-- \(S^{-}_{crit,t}\) is the forward-looking critical-reference storage threshold;
-- \(S_{min}\) is a minimum positive threshold;
-- \(S_{init}\) is the initialization lower bound;
-- \(S^{-}_{stat,t}\) is the statistical prior threshold;
-- \(S^{-}_{nc,t}\) is the forward-looking high-storage non-critical constraint.
-
-Because no debris-flow event was documented during the monitoring period, the event-evidence updating module is inactive in this public daily implementation.
-
----
-
-### 6.4 Basin Water Storage Degree
-
-BWSD is defined as:
-
-$$
-BWSD_{t}
-=
-\frac{\Delta S_{t}}{S^{-}_{crit,t}}
-$$
-
-where:
-
-- \(BWSD_{t}\) is dimensionless;
-- \(\Delta S_{t}\) is the apparent basin storage increment;
-- \(S^{-}_{crit,t}\) is the forward-looking critical-reference storage threshold.
-
-A value below 1.00 indicates that the apparent storage state remains below the forward-looking critical-reference level. A value equal to or greater than 1.00 indicates critical-reference hydrological-state exceedance.
-
-BWSD should be interpreted as a **hydrological-state warning indicator**, not as a stand-alone deterministic prediction of debris-flow occurrence.
-
----
-
-### 6.5 BWSD-based hydrological-state levels
-
-The daily BWSD-based hydrological-state level is classified using two management-oriented thresholds, \(\theta_{1}\) and \(\theta_{2}\):
-
-$$
-L^{B}_{t}
-=
-\begin{cases}
-0, & BWSD_{t} < \theta_{1} \\
-1, & \theta_{1} \leq BWSD_{t} < \theta_{2} \\
-2, & \theta_{2} \leq BWSD_{t} < 1.0 \\
-3, & BWSD_{t} \geq 1.0
-\end{cases}
-$$
-
-where:
-
-- \(L^{B}_{t}=0\): normal hydrological state;
-- \(L^{B}_{t}=1\): enhanced storage state;
-- \(L^{B}_{t}=2\): high-storage sensitive state;
-- \(L^{B}_{t}=3\): critical-reference hydrological state.
-
-In the Fengshuwan daily implementation, the management-oriented thresholds are:
-
-```text
-theta_1 = 0.70
-theta_2 = 0.90
-```
-
-These thresholds are used for warning-state classification and risk communication. They should not be interpreted as universal physical critical values for debris-flow initiation.
-
----
-
-## 7. Forward-looking information control
-
-A key feature of BWSD is the strict forward-looking threshold design.
-
-For each calculation day \(t\):
-
-1. the threshold \(S^{-}_{crit,t}\) is calculated first;
-2. only information available before day \(t\) is used;
-3. the current storage value \(\Delta S_{t}\) is not used to update the threshold for the same day;
-4. current-day field response and later confirmation are excluded from the current decision;
-5. confirmed evidence can affect only subsequent thresholds.
-
-This design avoids information leakage and circular threshold evaluation.
-
----
-
-## 8. Main Fengshuwan daily results reproduced by this repository
-
-The public daily calculation reproduces the main no-event BWSD sequence for the Fengshuwan catchment.
-
-Key reported values include:
-
-| Quantity | Value |
-|---|---:|
-| Monitoring period | 12 October 2023 to 6 April 2026 |
-| Number of daily observations | 908 |
-| Formal forward-looking evaluation period | 11 October 2024 to 6 April 2026 |
-| Number of formal-period BWSD values | 543 |
-| Cumulative precipitation | 2955.9 mm |
-| Cumulative field-measured evapotranspiration loss | 1459.9 mm |
-| Cumulative outlet runoff depth | 1294.1 mm |
-| Long-term apparent residual | 201.9 mm |
-| Maximum apparent basin storage increment | 473.1 mm on 26 June 2025 |
-| Maximum formal-period BWSD | 0.936 on 22 June 2025 |
-| Critical-reference exceedance days | 0 |
-
-The June 2025 wetting episode was the closest approach to the critical-reference level during the monitoring period. BWSD briefly exceeded 0.90 but remained below 1.00, consistent with independent field confirmation of non-critical catchment response.
-
----
-
-## 9. Installation
-
-The code requires Python 3.9 or later.
-
-Install the required Python packages with:
+Python 3.10 or newer. Clone this repository and run commands from its root:
 
 ```bash
 pip install -r requirements.txt
-```
-
-The expected packages are:
-
-```text
-numpy
-pandas
-openpyxl
-```
-
----
-
-## 10. Reproduction
-
-From the repository root, run:
-
-```bash
 python main.py
 ```
 
-The script reads:
+This writes a five-sheet workbook and CSV outputs to `results/generated/`, preserving the archived reference workbook.
 
-```text
-data/fengshuwan_processed_daily_hydrology.xlsx
+For the complete analysis and figures:
+
+```bash
+pip install -e ".[analysis,dev]"
+python -m bwsd --analysis --attribution --plots
+pytest -q
 ```
 
-and writes:
+For the environment recorded in Supplementary Table S3, use Python 3.12.11 and `pip install -r requirements-paper.txt`. Every run records package versions, input hashes and parameters in `run_manifest.json`. Different model-library versions can change XGBoost/SHAP values.
 
-```text
-results/fengshuwan_bwsd_results.xlsx
+![Daily storage-state assessment](results/reference/storage_state_overview.png)
+
+## Reproduced case evidence
+
+The processed record contains **908 daily observations**, 12 October 2023–6 April 2026, for a **0.8461 km² study subcatchment**. Formal evaluation begins on 11 October 2024 and contains 543 days.
+
+| Quantity | Reference result |
+|:--|--:|
+| Initialization reference | 479.250362 mm |
+| Maximum apparent storage, 26 June 2025 | 473.112715 mm |
+| Maximum formal BWSD, 22 June 2025 | 0.935957 |
+| Formal days with BWSD ≥ 0.70 / ≥ 0.90 / ≥ 1.00 | 165 / 1 / 0 |
+| One-day / three-day persistence NSE | 0.982 / 0.943 |
+| Original-paper Monte Carlo maximum: median [5th, 95th percentile] | 0.931 [0.904, 0.949] |
+
+Machine-readable reference tables and a verification report are in [`results/reference/`](results/reference/). These are **hydrological-state diagnostics**, not debris-flow event-detection scores.
+
+## Method and information timing
+
+```math
+I_t^*=P_t-Q_t-E_t,\qquad
+\Delta S_t=\max(0,\Delta S_{t-1}+I_t^*),\qquad
+BWSD_t=\frac{\Delta S_t}{S_{crit,t}^{-}}.
 ```
 
-After running the script, check the `Metadata` and `Parameters` sheets in the output workbook to confirm the calculation settings and input dataset DOI.
+The reference is the maximum of a floor, a fixed initialization bound, a strictly prior statistical quantile and a prior confirmed non-critical constraint. Current-day evidence cannot modify its own denominator. The core qualifies non-critical evidence using the already frozen BWSD and makes it available only after confirmation. Optional confirmation dates and an episode embargo support explicit timing audits.
 
----
+**Two Monte Carlo policies are provided transparently.** The original figure-generation notebook used all prior non-critical samples; `--mc-policy paper-prior` reproduces its reported uncertainty interval and is the default for the analysis command. `--mc-policy confirmed-high` applies the high-storage eligibility described in Supplementary Method S1 to every perturbed trajectory. They reproduce the same deterministic trajectory and the reported 1000-realization maxima for the main case parameters; other configurations can distinguish the rules. See the [reproducibility audit](docs/reproducibility.md).
 
-## 11. Notes on interpretation
+## Explore and extend
 
-The released BWSD sequence supports the non-event component of warning-indicator evaluation, including:
+- [Methods and equation mapping](docs/methods.md): initialization, evidence qualification, missing data and management levels.
+- [Reproducibility and source audit](docs/reproducibility.md): original outputs, Monte Carlo policies and library-sensitive attribution.
+- [Input and output dictionary](docs/data_dictionary.md): units, optional evidence flags and provenance.
+- [Data provenance](data/README.md), [change log](CHANGELOG.md) and [citation metadata](CITATION.cff).
 
-- forward-looking non-critical consistency;
-- threshold stability;
-- seasonal interpretability;
-- high-storage non-critical discrimination;
-- zero critical-reference exceedance during the formal no-event evaluation period.
+The Python API is small:
 
-The current monitoring record contains no documented debris-flow event. Therefore, this repository does not quantify:
+```python
+from bwsd import BWSDParameters, load_daily_hydrology, calculate_bwsd
 
-- hit rate;
-- missed-alarm rate;
-- false-alarm rate;
-- critical success index for debris-flow events;
-- operational warning lead time;
-- complete event-detection skill.
-
-Those evaluations require future monitoring with documented debris-flow events, independent catchments, and higher-temporal-resolution observations.
-
----
-
-## 12. Relationship to the manuscript
-
-This repository supports the reproducibility of the **core daily BWSD calculation** in the Fengshuwan case study.
-
-The manuscript additionally discusses:
-
-- rainfall-memory indicators;
-- API-type indicators;
-- simplified water-balance variants;
-- June 2025 high-storage non-critical interpretation;
-- XGBoost short-lead diagnostic prediction;
-- SHAP interpretation;
-- sensitivity analysis;
-- Monte Carlo uncertainty propagation;
-- field evidence from video monitoring, UAV observations, channel-condition inspection, and manual reconnaissance.
-
-These additional analyses are part of the broader manuscript workflow but are not fully included in this lightweight public repository.
-
----
-
-## 13. Citation 
-
-The associated manuscript is currently under peer review, and a formal journal citation is not yet available.
-
-If you use the processed daily hydrological dataset, please cite the Zenodo dataset:
-
-```text
-Wang, T. (2026). Processed Daily Hydrological Dataset for the Fengshuwan Catchment, Zhejiang, China, 2023–2026 (v1.0.0) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.20068173
+data = load_daily_hydrology("data/fengshuwan_processed_daily_hydrology.xlsx", "Daily_Data")
+daily, exceedance, metadata = calculate_bwsd(data, BWSDParameters())
 ```
 
-BibTeX entry for the dataset:
+CSV inputs are also supported. Use `--input`, `--sheet`, `--output` and `--config` for explicit inputs and JSON parameter overrides. A [new-catchment configuration](examples/new_catchment.json) requires independent `Noncritical_confirmed` evidence and replaces the Fengshuwan provenance. Run the core first: the bundled comparator/embargo/uncertainty analysis profile is case-specific and does not establish transferability.
 
-```bibtex
-@dataset{wang2026_fengshuwan_hydrology,
-  author    = {Wang, Tianlong},
-  title     = {Processed Daily Hydrological Dataset for the Fengshuwan Catchment, Zhejiang, China, 2023--2026},
-  year      = {2026},
-  version   = {v1.0.0},
-  publisher = {Zenodo},
-  doi       = {10.5281/zenodo.20068173},
-  url       = {https://doi.org/10.5281/zenodo.20068173}
-}
-```
+## Interpretation and reuse
 
----
+BWSD expresses apparent storage relative to a hydrological reference. The record contains no confirmed critical study-subcatchment-scale debris-flow response. BWSD ≥ 1 is not a calibrated debris-flow probability or an established event-warning threshold; documented events and independent catchments are needed for those claims. Pre-formal ratios are retrospective initialization diagnostics. The event-evidence extension described in Supplementary Method S2 is not implemented by this no-critical-event release.
 
-## 14. License
-
-This repository is released under the license specified in the `LICENSE` file.
-
-Unless otherwise stated, the software code and repository documentation are released under the MIT License.
-
-The processed daily hydrological dataset is archived separately on Zenodo and is governed by the license specified in the Zenodo record. Please cite the Zenodo dataset DOI when using the data.
-
----
-
-## 15. Contact
-
-For questions, data clarification, or collaboration inquiries, please contact:
-
-**Tianlong Wang**  
-Ocean College, Zhejiang University, Zhoushan 316000, China  
-School of Civil and Environmental Engineering, Nanyang Technological University, Singapore 637616, Singapore  
-Email: <tianlong_wang@zju.edu.cn>
+Code is licensed under [MIT](LICENSE). The archived dataset has its own license and citation at [Zenodo](https://doi.org/10.5281/zenodo.20068173); the data DOI is not the article DOI. Instrument-level raw records and exact publication-panel layouts are outside this release.

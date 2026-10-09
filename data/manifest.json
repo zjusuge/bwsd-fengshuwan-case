@@ -1,0 +1,16 @@
+{
+  "dataset_doi": "10.5281/zenodo.20068173",
+  "dataset_version": "v1.0.0",
+  "files": [
+    {
+      "path": "fengshuwan_processed_daily_hydrology.xlsx",
+      "sha256": "3706341cc062c43a3d0d5e6fc72efeb72f15e500aea25edc3218a9ba84ad7154",
+      "source": "Original public processed workbook, unchanged"
+    },
+    {
+      "path": "quality_flags.csv",
+      "sha256": "33d69df0963b96c401f8baa61b0a6b0809a47bc9a29a549d23f9a0065d283a6a",
+      "source": "Quality annotations from the original daily-analysis workbook, Supplementary Table S6"
+    }
+  ]
+}

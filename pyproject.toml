@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bwsd-fengshuwan"
+version = "1.1.0"
+description = "Reproducible apparent-storage assessment and manuscript diagnostics for Fengshuwan"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{name = "Tianlong Wang"}, {name = "Hongyue Sun"}]
+dependencies = ["numpy>=1.23", "pandas>=1.5", "openpyxl>=3.1"]
+
+[project.optional-dependencies]
+analysis = ["matplotlib>=3.7", "scipy>=1.10", "scikit-learn>=1.2", "xgboost>=2.0", "shap>=0.46"]
+dev = ["pytest>=7"]
+
+[project.scripts]
+bwsd = "bwsd.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["bwsd*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

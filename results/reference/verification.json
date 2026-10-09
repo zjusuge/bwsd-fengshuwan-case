@@ -1,0 +1,25 @@
+{
+  "software_version": "1.1.0",
+  "formal_trajectory_max_absolute_error_against_original_workbook": {
+    "DeltaS_mm": 5.684341886080802e-14,
+    "S_crit_minus_mm": 5.684341886080802e-14,
+    "BWSD_formal": 5.551115123125783e-17
+  },
+  "input_workbook_preserved": true,
+  "archived_output_workbook_preserved": true,
+  "monte_carlo_policies_max_absolute_realization_peak_difference": 1.1102230246251565e-16,
+  "paper_reported_monte_carlo_rounded": [
+    0.931,
+    0.904,
+    0.949
+  ],
+  "generated_monte_carlo_rounded": [
+    0.931,
+    0.904,
+    0.949
+  ],
+  "persistence_precision_in_manuscript": "NSE to three decimal places",
+  "interpretation": "Numerical reproducibility, not operational event-warning validation",
+  "tests_passed": 41,
+  "reported_peak_date_comparator_values_verified": true
+}

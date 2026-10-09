@@ -1,61 +1,13 @@
-# Processed Daily Hydrological Dataset
+# Data and provenance
 
-This folder is used by the BWSD reproducibility script to locate the processed daily hydrological workbook for the Fengshuwan catchment.
+The original `fengshuwan_processed_daily_hydrology.xlsx` is preserved without modification: 908 daily rows, 12 October 2023–6 April 2026, sheet `Daily_Data`.
 
-The authoritative archived version of the dataset is available on Zenodo:
+Dataset citation: Wang, T. (2026). *Processed Daily Hydrological Dataset for the Fengshuwan Catchment, Zhejiang, China, 2023–2026* (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.20068173
 
-```text
-Wang, T. (2026). Processed Daily Hydrological Dataset for the Fengshuwan Catchment, Zhejiang, China, 2023–2026 (v1.0.0) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.20068173
-```
+The area is the 0.8461 km² **study subcatchment**, within the broader Fengshuwan basin. P, Q and E are consistently expressed as daily depths. The archived field `Evapotranspiration_mm` represents an evaporation-based atmospheric water-loss proxy, not measured catchment evapotranspiration. Drainage was transformed from original stage observations before daily aggregation; the released daily stage cannot reconstruct that integration.
 
-## File expected by the script
+`quality_flags.csv` is an author-derived sidecar extracted from the original daily-analysis workbook, aligned to the released dates and verified against its flux series. It restores P_known, ET_known, is_obs and is_fill for Supplementary Table S6 uncertainty propagation. It is newly included in this software release; do not assume it is already contained in the existing Zenodo deposit. See [the dictionary](../docs/data_dictionary.md) and `manifest.json` for hashes and provenance.
 
-```text
-fengshuwan_processed_daily_hydrology.xlsx
-```
+Raw instrument records, field confirmation timestamps, photographs and the full manuscript are not redistributed here. Default daily non-critical confirmation is a stated replay assumption for this case, not a substitute for independent evidence at another site.
 
-## Input sheet
-
-```text
-Daily_Data
-```
-
-## Required columns
-
-| Column | Description | Unit |
-|---|---|---|
-| `Date` | Daily date | YYYY-MM-DD |
-| `Precipitation_mm` | Processed daily precipitation depth | mm day^-1 |
-| `Evapotranspiration_mm` | Processed daily evapotranspiration-loss depth | mm day^-1 |
-| `Water_level_m` | Processed outlet water level | m |
-| `Runoff_mm` | Processed daily outlet runoff depth converted to catchment-area-averaged water depth | mm day^-1 |
-
-## Study period
-
-The dataset covers the Fengshuwan catchment monitoring period from:
-
-```text
-2023-10-12 to 2026-04-06
-```
-
-and contains 908 daily observations.
-
-## Use and citation
-
-This dataset is a general processed daily hydrological dataset for the Fengshuwan catchment. It is used in this repository to reproduce the core daily Basin Water Storage Degree calculation, but it may also support other hydrological and geomorphological studies.
-
-If you use this dataset, please cite the Zenodo dataset DOI:
-
-```text
-Wang, T. (2026). Processed Daily Hydrological Dataset for the Fengshuwan Catchment, Zhejiang, China, 2023–2026 (v1.0.0) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.20068173
-```
-
-The Zenodo record should be treated as the authoritative archived dataset version. Any local copy in this GitHub repository is provided only for computational convenience.
-
-## Related code repository
-
-The BWSD reproducibility code repository is available at:
-
-```text
-https://github.com/zjusuge/bwsd-fengshuwan-case
-```
+The code's MIT license does not replace the dataset's license. Consult the Zenodo record for dataset reuse terms and cite the dataset separately from the accepted article.

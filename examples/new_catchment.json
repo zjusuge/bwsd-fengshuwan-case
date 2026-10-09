@@ -1,0 +1,11 @@
+{
+  "catchment_name": "Replace with your study subcatchment",
+  "catchment_area_km2": 1.0,
+  "dataset_title": "Replace with your dataset title",
+  "dataset_version": "unarchived",
+  "dataset_doi": "",
+  "dataset_url": "",
+  "dataset_citation": "Replace with your data provenance",
+  "t0": "2023-10-12",
+  "assume_confirmed_noncritical": false
+}
