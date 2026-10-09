@@ -9,7 +9,7 @@
     },
     {
       "path": "quality_flags.csv",
-      "sha256": "33d69df0963b96c401f8baa61b0a6b0809a47bc9a29a549d23f9a0065d283a6a",
+      "sha256": "85ac8f47b496baf304f836f7b52d92ecd3a459e81f43cedd616840e4bb2b6581",
       "source": "Quality annotations from the original daily-analysis workbook, Supplementary Table S6"
     }
   ]
